@@ -1,0 +1,21 @@
+# Data is downloaded at run time, never committed
+data/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS / editor junk
+.DS_Store
+__MACOSX/
+._*
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
