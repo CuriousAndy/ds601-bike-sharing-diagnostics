@@ -4,7 +4,7 @@ DS601 Statistical Learning, Group 2 (Topic 1).
 
 ## Problem
 
-TODO (1-2 sentences, filled in at the end).
+[TODO-TODAY T6 · Zhang Enhao] Problem statement, 1-2 sentences.
 
 ## Data source
 
@@ -19,7 +19,7 @@ TODO (Jiang Liuru drafts this in A3). The notebooks download the UCI Bike Sharin
 
 ## Key findings
 
-TODO
+[TODO-LATER · after the test audit] A few bullet points.
 
 ## Repo structure
 
