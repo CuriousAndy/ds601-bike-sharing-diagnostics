@@ -37,15 +37,17 @@ def load_day():
         with archive.open("day.csv") as day_file:
             df = pd.read_csv(day_file, parse_dates=["dteday"])
 
-    assert df.shape == (731, 16), "day.csv must contain exactly 731 rows and 16 columns"
+    assert df.shape == (731, 16), (
+        f"day.csv must contain exactly 731 rows and 16 columns; got shape {df.shape}"
+    )
     assert not df.isna().any().any(), "day.csv must not contain missing values"
     assert (df["cnt"] == df["casual"] + df["registered"]).all(), (
         "cnt must equal casual + registered on every row"
     )
-    expected_dates = pd.date_range("2011-01-01", "2012-12-31", freq="D")
-    assert not df["dteday"].duplicated().any(), "dteday must not contain duplicates"
-    assert df["dteday"].equals(pd.Series(expected_dates, name="dteday")), (
-        "dteday must contain every day from 2011-01-01 through 2012-12-31"
+    assert df["dteday"].is_unique and pd.DatetimeIndex(
+        df["dteday"].sort_values()
+    ).equals(pd.date_range("2011-01-01", "2012-12-31", freq="D")), (
+        "dteday must be unique and contain every day from 2011-01-01 through 2012-12-31"
     )
     return df.sort_values("dteday").reset_index(drop=True)
 
