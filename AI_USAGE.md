@@ -8,6 +8,7 @@ Add one row every time you use an AI tool, before your deadline.
 | Date | Member | Tool | File | What it was used for |
 | --- | --- | --- | --- | --- |
 | 2026-10-20 | Jiang Liuru | GitHub Copilot | src/data.py, notebooks/01_data_eda.ipynb | Implemented |
+| 2026-10-20 | Su Liang-Yu | Claude | src/diagnostics.py, src/models.py | Coding assistance |
 
 ## Declaration (copied into the report)
 
