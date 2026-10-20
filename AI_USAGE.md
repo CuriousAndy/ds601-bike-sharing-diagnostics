@@ -10,6 +10,7 @@ Add one row every time you use an AI tool, before your deadline.
 | 2026-10-20 | Jiang Liuru | GitHub Copilot | src/data.py, notebooks/01_data_eda.ipynb | Implemented |
 | 2026-10-20 | Su Liang-Yu | Claude | src/diagnostics.py, src/models.py | Coding assistance |
 | 2026-10-20 | Zhang Enhao | Claude Code | src/cv.py | Wrote the forward-chaining and shuffled k-fold CV functions and their tests |
+| 2026-10-21 | Zhang Enhao | Claude Code | src/cv.py, notebooks/04_cv_test_fairness.ipynb | Wrote the code cells of notebook 04 (CV comparison table and chart, out-of-fold fairness tables and chart, test-audit and refit code) and the out-of-fold prediction function |
 
 ## Declaration (copied into the report)
 

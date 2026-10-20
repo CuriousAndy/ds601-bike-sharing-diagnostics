@@ -44,8 +44,40 @@ def _fit_predict(formula, fit_df, pred_df, log_y=False, weights=None):
     return np.exp(pred) if log_y else pred
 
 
+fit_predict = _fit_predict  # public name, used by the test audit in notebook 04
+
+
 def _rmse(y, pred):
     return float(np.sqrt(np.mean((np.asarray(y) - pred) ** 2)))
+
+
+def forward_chain_oof(formula, train, exclude=None, log_y=False, weights=None,
+                      first_train_end=FIRST_TRAIN_END, n_blocks=N_BLOCKS):
+    """Out-of-fold predictions from forward chaining: one row per validation day
+    with its fold, the training-block end, the actual outcome and the prediction."""
+    df = train.sort_values("dteday").reset_index(drop=True)
+    keep = ~_excluded(exclude, df)
+    outcome = formula.split("~", 1)[0].strip()
+
+    rest = df.index[df["dteday"] > pd.Timestamp(first_train_end)]
+    blocks = np.array_split(rest, n_blocks)
+
+    parts = []
+    for k, block in enumerate(blocks, start=1):
+        start = df.loc[block[0], "dteday"]
+        fit_df = df[(df["dteday"] < start) & keep]
+        val_df = df.loc[block][keep.loc[block]]
+        assert fit_df["yr"].nunique() == 2, (
+            f"fold {k}: training block has only one year, so the yr effect cannot be estimated"
+        )
+        part = val_df.copy()
+        part["fold"] = k
+        part["train_end"] = fit_df["dteday"].max()
+        part["n_train"] = len(fit_df)
+        part["actual"] = part[outcome]
+        part["pred"] = _fit_predict(formula, fit_df, val_df, log_y, weights)
+        parts.append(part)
+    return pd.concat(parts, ignore_index=True)
 
 
 def forward_chain_cv(formula, train, exclude=None, log_y=False, weights=None,
@@ -55,31 +87,18 @@ def forward_chain_cv(formula, train, exclude=None, log_y=False, weights=None,
     Fold k trains on every day before validation block k and validates on block k.
     Returns one row per fold: training end, block dates, months covered, n, RMSE.
     """
-    df = train.sort_values("dteday").reset_index(drop=True)
-    keep = ~_excluded(exclude, df)
-    outcome = formula.split("~", 1)[0].strip()
-
-    rest = df.index[df["dteday"] > pd.Timestamp(first_train_end)]
-    blocks = np.array_split(rest, n_blocks)
-
+    oof = forward_chain_oof(formula, train, exclude, log_y, weights, first_train_end, n_blocks)
     rows = []
-    for k, block in enumerate(blocks, start=1):
-        start = df.loc[block[0], "dteday"]
-        fit_df = df[(df["dteday"] < start) & keep]
-        val_df = df.loc[block][keep.loc[block]]
-        assert fit_df["yr"].nunique() == 2, (
-            f"fold {k}: training block has only one year, so the yr effect cannot be estimated"
-        )
-        pred = _fit_predict(formula, fit_df, val_df, log_y, weights)
+    for k, g in oof.groupby("fold"):
         rows.append({
             "fold": k,
-            "train_end": fit_df["dteday"].max().date(),
-            "val_start": val_df["dteday"].min().date(),
-            "val_end": val_df["dteday"].max().date(),
-            "val_months": f"{val_df['dteday'].min():%b}-{val_df['dteday'].max():%b}",
-            "n_train": len(fit_df),
-            "n_val": len(val_df),
-            "rmse": _rmse(val_df[outcome], pred),
+            "train_end": g["train_end"].iloc[0].date(),
+            "val_start": g["dteday"].min().date(),
+            "val_end": g["dteday"].max().date(),
+            "val_months": f"{g['dteday'].min():%b}-{g['dteday'].max():%b}",
+            "n_train": int(g["n_train"].iloc[0]),
+            "n_val": len(g),
+            "rmse": _rmse(g["actual"], g["pred"].to_numpy()),
         })
     return pd.DataFrame(rows)
 
