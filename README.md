@@ -4,7 +4,7 @@ DS601 Statistical Learning, Group 2 (Topic 1).
 
 ## Problem
 
-[TODO-TODAY T6 · Zhang Enhao] Problem statement, 1-2 sentences.
+This project looks at which assumptions of an ordinary linear regression break down when we use weather and calendar variables to predict daily bike-share rentals in Washington, D.C. We first diagnose these problems, then try some remedies, and finally use time-ordered cross-validation to see whether the remedies really make the predictions better.
 
 ## Data source
 

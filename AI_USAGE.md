@@ -11,6 +11,7 @@ Add one row every time you use an AI tool, before your deadline.
 | 2026-10-20 | Su Liang-Yu | Claude | src/diagnostics.py, src/models.py | Coding assistance |
 | 2026-10-20 | Zhang Enhao | Claude Code | src/cv.py | Wrote the forward-chaining and shuffled k-fold CV functions and their tests |
 | 2026-10-21 | Zhang Enhao | Claude Code | src/cv.py, notebooks/04_cv_test_fairness.ipynb | Wrote the code cells of notebook 04 (CV comparison table and chart, out-of-fold fairness tables and chart, test-audit and refit code) and the out-of-fold prediction function |
+| 2026-10-21 | Zhang Enhao | Claude Code | notebooks/04_cv_test_fairness.ipynb, README.md, report/report.md | Translated Zhang's own Chinese drafts (notebook 04 Sections 1-4 text, README problem statement, report Sections 1, 3.4 and 3.5) into English and checked the numbers quoted in them |
 
 ## Declaration (copied into the report)
 
