@@ -24,8 +24,9 @@ ATEMP_LINE_SLOPE = 0.888273
 ATEMP_RESID_SCALE = 0.013561
 ATEMP_GAP_Z = 10.0  # flag a day when |robust z| > ATEMP_GAP_Z; training maximum is about 5.0
 
-# Switch for the atemp part of D1. Decide in C1b whether it stays on if the remedied model drops atemp.
-USE_ATEMP_RULE = True
+# Switch for the atemp part of D1. Off: the remedied model drops atemp from R1 onwards, so an
+# error in atemp cannot affect its predictions, and the rule removes no training day.
+USE_ATEMP_RULE = False
 
 # Event types (column `type` of src/external_events.csv, agreed in the group on 21 Oct).
 # Only these two types exclude a day; every other type is kept and only flagged.
