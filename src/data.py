@@ -74,9 +74,22 @@ def add_real_units(df):
     return result
 
 
-def load_events():
-    """Read EVENTS_PATH: one row per notable day in 2011-2012 (date, event, type, source_url).
+EVENT_TYPES = {"hurricane_storm", "federal_closure", "snow", "early_dismissal", "event", "holiday", "other"}
 
-    Built from external records only, never by looking at cnt.
+
+def load_events():
+    """Read EVENTS_PATH: notable days in 2011-2012 (date, event, type, source_url).
+
+    One row per (date, type); a day can have several rows, e.g. Sandy is both
+    hurricane_storm and federal_closure. Built from external records only, never by looking at cnt.
     """
-    raise NotImplementedError
+    events = pd.read_csv(EVENTS_PATH, parse_dates=["date"])
+    expected = ["date", "event", "type", "source_url"]
+    assert list(events.columns) == expected, f"columns must be {expected}, got {list(events.columns)}"
+    unknown = sorted(set(events["type"]) - EVENT_TYPES)
+    assert not unknown, f"unknown event type(s) {unknown}; allowed: {sorted(EVENT_TYPES)}"
+    assert not events.duplicated(["date", "type"]).any(), "duplicate (date, type) rows"
+    assert events["date"].between("2011-01-01", "2012-12-31").all(), "every date must be in 2011-2012"
+    assert events["source_url"].notna().all() and (events["source_url"].str.strip() != "").all(), \
+        "every event needs a source_url"
+    return events.sort_values(["date", "type"]).reset_index(drop=True)
